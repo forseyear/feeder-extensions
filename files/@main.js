@@ -284,7 +284,7 @@ if (extensions && !extensions.features) {
 			// 更新内容取得
 			var updateList = '';
 			var data = $.ajax({
-				url: 'https://api.github.com/repos/vuf/feeder-extensions/commits',
+				url: 'https://api.github.com/repos/forseyear/feeder-extensions/commits',
 				type: 'get',
 				async: false,
 			});
