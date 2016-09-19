@@ -9,17 +9,39 @@
 		switch (method) {
 			case 'show':
 				object.css('overflow', object.data('orgOverflow'));
+				object.css('margin', object.data('orgMargin'));
+				object.css('padding', object.data('orgPadding'));
 				object.css('width', object.data('orgWidth'));
 				object.css('height', object.data('orgHeight'));
 				break;
 			
 			case 'hide':
 				object.data('orgOverflow', object.css('overflow'));
+				object.data('orgMargin', object.css('margin'));
+				object.data('orgPadding', object.css('padding'));
 				object.data('orgWidth', object.css('width'));
 				object.data('orgHeight', object.css('height'));
 				object.css('overflow', 'hidden');
+				object.css('margin', 0);
+				object.css('padding', 0);
 				object.css('width', 0);
 				object.css('height', 0);
+				break;
+		}
+	}
+	var changeElements = function(method) {
+		// 綺麗な方法ではないが、エラー対策
+		switch (method) {
+			case 'show':
+				var usersFrameNext = $("#online_users_frame").next();
+				$("#online_users_frame").insertBefore($("#feeder_links_frame")).append($("#online_users"));
+				$("#feeder_links_frame").insertBefore(usersFrameNext).append($("#feeder_links"));
+				break;
+			
+			case 'hide':
+				var linksFrameNext = $("#feeder_links_frame").next();
+				$("#feeder_links_frame").insertBefore($("#online_users_frame")).append($("#online_users"));
+				$("#online_users_frame").insertBefore(linksFrameNext).append($("#feeder_links"));
 				break;
 		}
 	}
@@ -46,9 +68,11 @@
 	};
 	return {
 		'constructor': function() {
+			changeElements('hide');
 			toggleAds('hide');
 		},
 		'destructor': function() {
+			changeElements('show');
 			toggleAds('show');
 		},
 	};

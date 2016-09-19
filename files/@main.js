@@ -133,7 +133,7 @@ if (extensions && !extensions.features) {
 				'description': '最初にページに表示されるお知らせを非表示にします',
 			},
 			'removeAds': {
-				'available':   false,
+				'available':   true,
 				'selected':    false,
 				'caption':     '広告を隠す',
 				'description': 'ページに表示されている広告を非表示にします',
