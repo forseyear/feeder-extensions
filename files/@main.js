@@ -244,7 +244,7 @@ if (extensions && !extensions.features) {
 		);
 		ext.commonFunctions.setStyle('table#extension-updatelog>thead>tr>th, table#extension-updatelog .extension-updatelog-author, table#extension-updatelog .extension-updatelog-date', 'text-align: center;');
 		ext.commonFunctions.setStyle('table#extension-updatelog>tbody>tr>td.extension-updatelog-content', 'text-align: left;');
-		ext.commonFunctions.setStyle('table#extension-updatelog .extension-updatelog-author',  'width: 4em;');
+		ext.commonFunctions.setStyle('table#extension-updatelog .extension-updatelog-author',  'width: 6em;');
 		ext.commonFunctions.setStyle('table#extension-updatelog .extension-updatelog-date',    'width: 10em;');
 		ext.commonFunctions.setStyle('table#extension-updatelog .extension-updatelog-content', 'width: 36em;');
 
@@ -607,7 +607,7 @@ if (extensions && !extensions.features) {
 		
 		
 		// ヘッダに呼び出しアイコン追加
-		$('#header_items').css('width', '210px');
+		$('#header_items').css('width', '225px');
 		$('#header_items').prepend('<img id="extensions_icn" src="img/emoticons/180.gif" class="clickable" title="拡張機能選択" />&nbsp;');
 		$('#extensions_icn').click(function() {
 			ext.selectExtensions(false);
