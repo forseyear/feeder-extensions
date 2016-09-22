@@ -66,6 +66,12 @@ if (extensions && !extensions.features) {
 				'caption':     '最近誰かに使用された画像ピッカーを追加',
 				'description': '最近誰かに使用された画像の選択機能を追加します',
 			},
+			'dualTextArea': {
+				'available':   true,
+				'selected':    false,
+				'caption':     '入力ボックスを追加',
+				'description': 'もう一個の入力ボックスを追加します',
+			},
 			'embedGyazo': {
 				'available':   true,
 				'selected':    true,
