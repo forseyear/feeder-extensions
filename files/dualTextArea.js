@@ -1,67 +1,50 @@
 // テキストエリアを追加する拡張機能
-// コードの一部がよくわからないけど予想通りの動きをするのでこのままにしておく
 
 (function(self, common, ext, fqon) {
 	var orgPostFeed = window.postFeed;
-	var inactiveForm = function() {
-		return (activeForm == 'post_form_multi') ? 'post_form_single' : 'post_form_multi';
-	};
-	var inactiveFormDisplay = function(value) {
-		$('#'+inactiveForm()).css('display', value);
-		$('#'+inactiveForm()).parent().css('display', value);
-	};
-	var modToggleInput = function () {
-		// 書き込み内容取得
-		var contentSingle = $('#post_form_single').val();
-		var contentMulti = $('#post_form_multi').val();
-		
-		// オリジナルの関数を呼び出す
-		toggleInput();
-		
-		// アクティブでないフォームを表示する
-		inactiveFormDisplay('inline');
-		
-		// 書き込み内容復元
-		$('#post_form_single').val(contentSingle);
-		$('#post_form_multi').val(contentMulti);
-	};
 	var modPostFeed = function() {
-		// 戻り値を宣言
-		var result;
+		// 書き込み内容の長さを取得
+		var lengthSingle = $('#post_form_single').val().length;
+		var lengthMulti = $('#post_form_multi').val().length;
 		
-		// 書き込み内容取得
-		var contentActive = $('#'+activeForm).val();
-		var contentInactive = $('#'+inactiveForm()).val();
-		
-		// オリジナルの関数を呼び出す
-		if (contentActive.length > 0) {
-			result = orgPostFeed.call(this);
-			$('#'+activeForm).val('');
+		// 内容があれば投稿
+		if (lengthSingle > 0) {
+			activeForm = 'post_form_single'
+			orgPostFeed();
+			$('#post_form_single').val('');
+		}
+		if (lengthMulti > 0) {
+			activeForm = 'post_form_multi';
+			orgPostFeed();
+			$('#post_form_multi').val('');
 		}
 		
-		// アクティブでないフォームの書き込み内容復元
-		// $('#'+inactiveForm()).val(contentInactive);
-		
-		// 書き込みがあれば投稿
-		if (contentInactive.length > 0) {
-			modToggleInput();
-			result = orgPostFeed.call(this);
-			$('#'+activeForm).val('');
+		// 内容がなくても投稿
+		if (lengthSingle == 0 && lengthMulti == 0) {
+			orgPostFeed();
 		}
 		
-		return result;
+		return;
 	};
 	
 	return {
 		'constructor': function() {
-			inactiveFormDisplay('inline');
-			$('#input_type').parent().css('display', 'none');
 			window.postFeed = modPostFeed;
+			var inactiveForm = (activeForm == 'post_form_multi') ? 'post_form_single' : 'post_form_multi';
+			$('#'+inactiveForm).css('display', 'inline');
+			$('#'+inactiveForm).parent().css('display', 'inline');
+			$('#input_type').parent().css('display', 'none');
+			$('#post_form_single, #post_form_multi').on('focus.dualTextArea', function() {
+				activeForm = $(this).attr('id');
+			});
 		},
 		'destructor': function() {
-			inactiveFormDisplay('none');
-			$('#input_type').parent().css('display', 'table-cell');
 			window.postFeed = orgPostFeed;
+			var inactiveForm = (activeForm == 'post_form_multi') ? 'post_form_single' : 'post_form_multi';
+			$('#'+inactiveForm).css('display', 'none');
+			$('#'+inactiveForm).parent().css('display', 'none');
+			$('#input_type').parent().css('display', 'table-cell');
+			$('#post_form_single, #post_form_multi').off('focus.dualTextArea');
 		},
 	};
 });
