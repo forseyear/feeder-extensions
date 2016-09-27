@@ -1,35 +1,27 @@
 // テキストエリアを追加する拡張機能
 
 (function(self, common, ext, fqon) {
-	var orgPostFeed = window.postFeed;
-	var modPostFeed = function() {
-		// 書き込み内容の長さを取得
-		var lengthSingle = $('#post_form_single').val().length;
-		var lengthMulti = $('#post_form_multi').val().length;
-		
-		// 内容があれば投稿
-		if (lengthSingle > 0) {
-			activeForm = 'post_form_single'
-			orgPostFeed();
-			$('#post_form_single').val('');
-		}
-		if (lengthMulti > 0) {
-			activeForm = 'post_form_multi';
-			orgPostFeed();
-			$('#post_form_multi').val('');
-		}
-		
-		// 内容がなくても投稿
-		if (lengthSingle == 0 && lengthMulti == 0) {
-			orgPostFeed();
-		}
-		
-		return;
-	};
-	
 	return {
 		'constructor': function() {
-			window.postFeed = modPostFeed;
+			common.addFilter('input', 'dualText', function() {
+				var inactiveForm = (activeForm == 'post_form_multi') ? 'post_form_single' : 'post_form_multi';
+				if (activeForm != $('#'+inactiveForm).attr('id') && $('#'+inactiveForm).val().length > 0) {
+					var orgActiveForm = activeForm;
+					
+					// 内容があれば投稿
+					activeForm = inactiveForm;
+					common.orgPostFeed();
+					$('#'+activeForm).val('');
+					
+					activeForm = orgActiveForm;
+					
+					// 投稿したなら離脱する
+					if ($('#'+activeForm).val().length == 0) {
+						console.log('return')
+						return;
+					}
+				}
+			});
 			var inactiveForm = (activeForm == 'post_form_multi') ? 'post_form_single' : 'post_form_multi';
 			$('#'+inactiveForm).css('display', 'inline');
 			$('#'+inactiveForm).parent().css('display', 'inline');
@@ -39,7 +31,7 @@
 			});
 		},
 		'destructor': function() {
-			window.postFeed = orgPostFeed;
+			common.removeFilter('input', 'dualText');
 			var inactiveForm = (activeForm == 'post_form_multi') ? 'post_form_single' : 'post_form_multi';
 			$('#'+inactiveForm).css('display', 'none');
 			$('#'+inactiveForm).parent().css('display', 'none');
