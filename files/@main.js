@@ -69,8 +69,8 @@ if (extensions && !extensions.features) {
 			'dualTextArea': {
 				'available':   true,
 				'selected':    false,
-				'caption':     '入力ボックスを拡張',
-				'description': '二つのの入力ボックスを統一します',
+				'caption':     '入力エリアを統一',
+				'description': '二つある入力欄を統一します',
 			},
 			'embedGyazo': {
 				'available':   true,

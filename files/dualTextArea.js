@@ -7,7 +7,6 @@
 		changedForm.val('');
 
 		changedForm.css('display', 'inline-block');
-		changedForm.attr('placeholder', '発言内容を入力（Enterで投稿  Shift + Enterで改行）');
 		changedForm.val(formValue);
 		changedForm[0].selectionStart = selectionIndex;
 		changedForm[0].selectionEnd = selectionIndex;
@@ -20,7 +19,7 @@
 			// 準備
 			$('#input_type').css('display', 'none');
 			if (window.activeForm == 'post_form_multi') window.toggleInput();
-			$('#post_form_single').attr('placeholder', '発言内容を入力（Enterで投稿  Shift + Enterで改行）');
+			$('#post_form_single, #post_form_multi').attr('placeholder', '発言内容を入力（Enterで投稿  Shift + Enterで改行）');
 
 			$('#post_form_single').off('keypress');
 			$('#post_form_multi').off('keyup');
@@ -75,7 +74,7 @@
 						$(this).css('display', 'none');
 					}
 				}
-				var height = Math.max(Math.min(($(this).val().split('\n').length - 1) * 20, 240), 40);
+				var height = Math.max(Math.min(($(this).val().split('\n').length) * 20, 240), 40);
 				$(this).height(height);
 			});
 			$('#post_form_multi').on('keydown.dualTextArea', function(e) {
@@ -102,8 +101,7 @@
 			$('#post_form_multi').attr('placeholder', '発言内容を入力（Shift + Enterで投稿）');
 
 			// イベントも戻す
-			$('#post_form_single').off('.dualTextArea');
-			$('#post_form_multi').off('.dualTextArea');
+			$('#post_form_single, #post_form_multi').off('.dualTextArea');
 			$('#post_form_single').on('keypress', function(e) {
 				if (e.keyCode == 13) window.postFeed.call(this);
 			});
@@ -111,7 +109,7 @@
 				if (e.keyCode == 13) {
 					if (e.shiftKey) window.postFeed.call(this);
 				}
-				var height = Math.max(Math.min(($(this).val().split('\n').length - 1) * 20, 240), 40);
+				var height = Math.max(Math.min(($(this).val().split('\n').length) * 20, 240), 40);
 				$(this).height(height);
 			});
 		},
