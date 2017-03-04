@@ -63,10 +63,34 @@
 				});
 				return entries;
 			});
+			var orgOpenNote = window.openNote;
+			window.openNote = function(index) {
+				orgOpenNote(index);
+				setTimeout(function() {
+					$('#sub_note_contents').find('.ref').each(function() {
+						var from = $(this).find('tr td span.feed_id').text();
+						var ref = $(this).find('tr td:eq(0)').html().replace(/&gt;&gt;(\d+)/g, '<a class="clickable" onclick="'+fqon+'.expand(this, '+from+', $1)">&gt;&gt;$1</a>');
+						$(this).find('tr td:eq(0)').html(ref);
+					});
+				}, 300);
+			}
+			var orgViewMessages = window.viewMessages;
+			window.viewMessages = function(type) {
+				orgViewMessages(type);
+				setTimeout(function() {
+					$('#message_view').find('.ref').each(function() {
+						var from = $(this).find('tr td span.feed_id').text();
+						var ref = $(this).find('tr td:eq(0)').html().replace(/&gt;&gt;(\d+)/g, '<a class="clickable" onclick="'+fqon+'.expand(this, '+from+', $1)">&gt;&gt;$1</a>');
+						$(this).find('tr td:eq(0)').html(ref);
+					});
+				}, 600);
+			}
 		},
 		'destructor': function() {
 			// フィルタ関数登録解除
 			common.removeFilter('output', 'expandNestedQuotes');
+			window.openNote = orgOpenNote;
+			window.viewMessages = orgViewMessages;
 		},
 	};
 });
