@@ -14,11 +14,11 @@
 			
 			// モバイルページから投稿を取得して
 			$.get('mobile/?v_id=' + target, function(mobilePage) {
-				var pageElements = $(mobilePage).find('body').html().replace(/\sxmlns=\"http\:\/\/www\.w3\.org\/1999\/xhtml\"/g, '').split('<br />');
+				var pageElements = $(mobilePage).find('body').html().replace(/\sxmlns=\"http\:\/\/www\.w3\.org\/1999\/xhtml\"/g, '').replace(/^.*?<br\s\/>/, '');
 
 				// エラーが出ないようにする
 				var referenceHtml = document.createElement('div');
-				referenceHtml.innerHTML = pageElements[1];
+				referenceHtml.innerHTML = pageElements;
 
 				// ページから必要な情報を抜き出す
 				var nameHTML = referenceHtml.innerHTML.replace(/(^.*?)\s?<span.*$/i, '$1');
@@ -26,11 +26,15 @@
 				var name = nameHTML.replace(/<.*?alt=\"([^\"].*?)\".*?>/g, '$1');
 				var dataHTML = referenceHtml.innerHTML.replace(/^.*?<div.*?>(.*?)<div.*$/, '$1');
 				// HTMLから引用タグを置き換える
-				var data = dataHTML.replace(/<a.*?href=\"\.\?v_id=(\d+).*?(&gt;&gt;\d+).*?<\/a>/ig, '<a class="clickable" onclick="'+fqon+'.expand(this, '+target+', $1)">$2</a>');
+				var data = dataHTML.replace(/<a.*?.\?v_id=(\d+).*?(&gt;&gt;\d+).*?<\/a>/g, '<a class="clickable" onclick="'+fqon+'.expand(this, '+target+', $1)">$2</a>');
 
 				// 引用部分を作成
-				var quote = '<table class="ref"><tbody><tr><td colspan="2">'+name+'<br>'+data+'</td></tr><tr><td><span class="feed_id">'
-					+target+'</span></td><td class="align_r"><a class="clickable" onclick="jumpToFeed('+target+'); return false;">この投稿へジャンプ→</a></td></tr></tbody></table>';	
+				var quote = '<table class="ref"><tbody><tr><td colspan="2">'+name+'<br>'+data+'</td></tr><tr><td><span class="feed_id">'+target+'</span></td><td class="align_r"><a class="clickable" onclick="jumpToFeed('+target+'); return false;">この投稿へジャンプ→</a></td></tr></tbody></table>';
+
+				// モバイルアイコンから戻す
+				setTimeout(function() {
+					changeStatus($('#my_status_icn').attr('src').charAt(17));
+				}, 200);
 
 				// なければリンクを無効化して元に戻す
 				if (referenceHtml.childNodes[0].innerText === '該当の投稿は削除されたか、存在しません') {
@@ -41,9 +45,6 @@
 				// 表示
 				$element.after(quote).remove();
 			});
-
-			// モバイルアイコンから戻す
-			window.syncMyStatus();
 		},
 		'constructor': function() {
 			// フィルタ関数登録
