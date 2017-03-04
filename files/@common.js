@@ -16,8 +16,8 @@ ninja_ads_count = 3;
 	self.deletedPictures = [];
 	
 	
-	// 部屋情報取得
-	var isPremium = !!$('#header>h1>img[src$="/crown.png"]').length;
+	// 情報取得
+	var isPremium = $('#online_users_list>li.alpha_12_5>img').length == 4;
 	
 	self.roomInfo = {
 		subdomain:          location.hostname.split('.')[0],
