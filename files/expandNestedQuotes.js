@@ -12,34 +12,38 @@
 					.attr('src', common.loadingImage)
 			);
 			
-			// ページ番号を取得して
-			$.get('get_page_num.php?mode=0&id=' + from + '&num=20', function(page) {
-				// エントリリストを取得して
-				$.get('feed_list.php?mode=0&num=20&page=' + page + '&from=0&flip=0', function(rawEntries) {
-					// 適合するエントリを探す
-					var rawEntry = '';
-					var entryList = rawEntries.split('\n');
-					for (var i=0; i<entryList.length; i++) {
-						var entryId = entryList[i].split('\t')[0];
-						if (entryId == from) {
-							rawEntry = entryList[i];
-						}
-					}
-					
-					// その中から適合する引用を探す
-					var entry = $(arrangeFeed(getFeedArray(rawEntry, false)));
-					var quote = entry.find('span.feed_id:contains('+target+')').parents('table.ref');
-					
-					// なければ元に戻す
-					if (quote.length < 1) {
-						$element.html(originalHtml);
-						return;
-					}
-					
-					// 表示
-					$element.after(quote).remove();
-				});
+			// モバイルページから投稿を取得して
+			$.get('mobile/?v_id=' + target, function(mobilePage) {
+				var pageElements = $(mobilePage).find('body').html().replace(/\sxmlns=\"http\:\/\/www\.w3\.org\/1999\/xhtml\"/g, '').split('<br />');
+
+				// エラーが出ないようにする
+				var referenceHtml = document.createElement('div');
+				referenceHtml.innerHTML = pageElements[1];
+
+				// ページから必要な情報を抜き出す
+				var nameHTML = referenceHtml.innerHTML.replace(/(^.*?)\s?<span.*$/i, '$1');
+				// HTMLからアバターを置き換える
+				var name = nameHTML.replace(/<.*?alt=\"([^\"].*?)\".*?>/g, '$1');
+				var dataHTML = referenceHtml.innerHTML.replace(/^.*?<div.*?>(.*?)<div.*$/, '$1');
+				// HTMLから引用タグを置き換える
+				var data = dataHTML.replace(/<a.*?href=\"\.\?v_id=(\d+).*?(&gt;&gt;\d+).*?<\/a>/ig, '<a class="clickable" onclick="'+fqon+'.expand(this, '+target+', $1)">$2</a>');
+
+				// 引用部分を作成
+				var quote = '<table class="ref"><tbody><tr><td colspan="2">'+name+'<br>'+data+'</td></tr><tr><td><span class="feed_id">'
+					+target+'</span></td><td class="align_r"><a class="clickable" onclick="jumpToFeed('+target+'); return false;">この投稿へジャンプ→</a></td></tr></tbody></table>';	
+
+				// なければリンクを無効化して元に戻す
+				if (referenceHtml.childNodes[0].innerText === '該当の投稿は削除されたか、存在しません') {
+					$element.after(originalHtml).remove();
+					return;
+				}
+
+				// 表示
+				$element.after(quote).remove();
 			});
+
+			// モバイルアイコンから戻す
+			window.syncMyStatus();
 		},
 		'constructor': function() {
 			// フィルタ関数登録
