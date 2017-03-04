@@ -3,7 +3,7 @@
 if (!extensions || !extensions.loadScript) {
 	var extensions = {};
 	extensions.debug = false;
-	extensions.baseURL = '//forseyear.github.io/feeder-extensions/files/';
+	extensions.baseURL = '//localhost:8080/files/';
 	extensions.convertToURL = function(name) {
 		return extensions.baseURL + name + '?_=' + +new Date();
 	};
